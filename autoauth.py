@@ -45,7 +45,7 @@ class Authenticate(object):
         except ImportError:
             return
 
-        keyring.set_password(self.appliaction,
+        keyring.set_password(self.application,
                              self.username,
                              self.password)
 
