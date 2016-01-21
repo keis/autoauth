@@ -1,6 +1,7 @@
 '''authentication in urllib2 and requests for the command line'''
 
 from __future__ import print_function
+import logging
 import base64
 import sys
 import getpass
@@ -10,6 +11,8 @@ try:
     raw_input
 except NameError:
     raw_input = input
+
+logger = logging.getLogger('autoauth')
 
 
 class Authenticate(object):
@@ -62,7 +65,10 @@ class Authenticate(object):
                 password = getpass.getpass('Password: ')
                 if password != '':
                     self.password = password
-                    self.save_password()
+                    try:
+                        self.save_password()
+                    except:
+                        logger.warn("Failed to store password", exc_info=True)
 
         return self.credentials
 
@@ -82,6 +88,8 @@ if __name__ == '__main__':
     parser.add_argument('application')
     parser.add_argument('--username')
     parser.add_argument('--password')
+
+    logging.basicConfig(level='INFO')
 
     args = parser.parse_args()
     auth = Authenticate(args.application, args.username, args.password)
